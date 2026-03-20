@@ -1,3 +1,6 @@
+"""
+feature calculation + claude suggested features
+"""
 import pandas as pd
 from typing import List
 
