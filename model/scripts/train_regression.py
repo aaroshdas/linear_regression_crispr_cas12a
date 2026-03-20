@@ -89,7 +89,7 @@ def assemble_features(sequences, args):
         parts.append(hc)
 
     if not args.no_embed:
-        emb = create_embeddings.get_dnabert2_embeddings(sequences, layer=args.layer)
+        emb = create_embeddings.get_embeddings(sequences, layer=args.layer, method=args.embedding_method)
         parts.append(emb.astype(np.float32))
 
 
@@ -141,6 +141,8 @@ def parse_args():
     parser.add_argument("--no-embed", action="store_true")
     parser.add_argument("--no-handcrafted", action="store_true")
     parser.add_argument("--no-cv", action="store_true")
+    parser.add_argument("--embedding-method", default="kmer", choices=["kmer", "dnabert2"])
+
     return parser.parse_args()
 
 
@@ -182,6 +184,7 @@ def main():
     y_pred_raw = y_pred * t_std + t_mean
     y_test_raw = y_test * t_std + t_mean
     mae_raw = mean_absolute_error(y_test_raw, y_pred_raw)
+    print(f'Test MAE = {mae_raw:.4f}')
 
     pred_df = pd.DataFrame({
         "context_seq": test_seqs,
