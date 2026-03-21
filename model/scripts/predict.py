@@ -7,16 +7,45 @@ MODEL_PATH = "../linear_results/ridge_model.pkl"
 MEAN_PATH = "../weights/target_mean.npy"
 STD_PATH = "../weights/target_std.npy"
 
+PAM_START  = 4
+WINDOW_LEN = 34
 
-def filter_sequence(seq: str) -> str:
-    if len(seq) > 34:
-        filtered = seq[:34]
-        return filtered
-    return seq
 
-def predict(sequence: str):
+COMPLEMENT = str.maketrans("ACGT", "TGCA")
+
+def reverse_complement(seq: str) -> str:
+    return seq.translate(COMPLEMENT)[::-1]
+
+
+def find_window(seq: str, pam: str):
+    pam = reverse_complement(pam.upper())
+    seq = reverse_complement(seq.upper())
+
+
+    i = seq.find(pam)
+    if i == -1:
+        raise ValueError(f"PAM {pam} not found in sequence {seq}")
+
+    window_start = i - PAM_START
+    window_end   = window_start + WINDOW_LEN
+
+    if window_start < 0:
+        raise ValueError(f"PAM found at position {i} but not enough upstream context | (need {PAM_START}nt before PAM, only {i}nt available).")
+    if window_end > len(seq):
+        raise ValueError(f"PAM found at position {i} but not enough downstream context | (need {window_end}nt total, sequence is {len(seq)}nt).")
+
+    window = seq[window_start:window_end]
+    print(f"PAM '{pam}' found at position {i}")
+
+    return window
+
+
+def predict(sequence: str, pam: str =None):
     sequence = sequence.upper().strip()
-    sequence = filter_sequence(sequence)
+    if pam is not None:
+        sequence = find_window(sequence, pam)
+    elif len(sequence) > WINDOW_LEN:
+        sequence[:WINDOW_LEN]
 
     with open(MODEL_PATH, "rb") as f:
         model = pickle.load(f)
@@ -35,7 +64,9 @@ def predict(sequence: str):
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("sequence", type=str)
+    p.add_argument("--pam", type=str, default=None)
     args = p.parse_args()
+    
 
-    result = predict(args.sequence)
+    result = predict(args.sequence, pam=args.pam)
     print(f"Predicted indel frequency: {result:.2f}%")

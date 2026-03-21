@@ -1,9 +1,8 @@
 """
-
+python model/scripts/train_regression.py --no-embed --include-onehot
 python model/scripts/train_regression.py 
-python model/scripts/train_regression.py --no-embed --include-onehot = hand-crafted features only
-python model/scripts/train_regression.py --no-handcrafted = embeddings only
-python model/scripts/train_regression.py --layer mean = mean pooling instead of CLS
+python model/scripts/train_regression.py --no-handcrafted
+python model/scripts/train_regression.py --layer mean
 """
 
 import argparse
@@ -189,8 +188,8 @@ def main():
     print(f'Test MAE = {mae_raw:.4f}')
 
     pred_df = pd.DataFrame({
-        "context_seq": test_seqs,
-        "guide_seq": test_df[INP_COL].tolist(),
+        "context_sequence": test_seqs,
+        "guide_sequence": test_df[INP_COL].tolist(),
         "y_true_norm": y_test,
         "y_pred_norm": y_pred,
         "y_true_pct": y_test_raw,
