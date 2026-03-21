@@ -7,20 +7,16 @@ MODEL_PATH = "../linear_results/ridge_model.pkl"
 MEAN_PATH = "../weights/target_mean.npy"
 STD_PATH = "../weights/target_std.npy"
 
-EXPECTED_LEN = 34  # length the model was trained on
 
-def truncate_sequence(seq: str, target_len: int = EXPECTED_LEN) -> str:
-    if len(seq) > target_len:
-        truncated = seq[:target_len]
-        print(f"  Sequence too long ({len(seq)}nt), truncated to {target_len}nt: {truncated}")
-        return truncated
-    elif len(seq) < target_len:
-        raise ValueError(f"Sequence too short ({len(seq)}nt) — expected {target_len}nt minimum.")
+def filter_sequence(seq: str) -> str:
+    if len(seq) > 34:
+        filtered = seq[:34]
+        return filtered
     return seq
 
-def predict(sequence: str) -> float:
+def predict(sequence: str):
     sequence = sequence.upper().strip()
-    sequence = truncate_sequence(sequence)
+    sequence = filter_sequence(sequence)
 
     with open(MODEL_PATH, "rb") as f:
         model = pickle.load(f)
@@ -38,7 +34,7 @@ def predict(sequence: str) -> float:
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("sequence", type=str, help="Input sequence (will be truncated to 34nt if longer)")
+    p.add_argument("sequence", type=str)
     args = p.parse_args()
 
     result = predict(args.sequence)
