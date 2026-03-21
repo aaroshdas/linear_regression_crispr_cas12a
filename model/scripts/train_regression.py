@@ -29,8 +29,8 @@ DATASET_PATH = os.path.join("data", "training_sets", "raw_data")
 TRAIN_FILE = "Kim_2018_Train.csv"
 TEST_FILE = "Kim_2018_Test.csv"
 
-WEIGHTS_DIR = "../weights/"
-OUTPUT_DIR = "../linear_results/"
+WEIGHTS_DIR = os.path.join("model", "weights")
+OUTPUT_DIR = os.path.join("model", "results")
 
 TARGET_COL = "Indel frequency"
 INP_COL = "Context Sequence"
@@ -174,7 +174,7 @@ def main():
 
     final_model = train_final_model(x_train, y_train, model_class, param_grid)
 
-    model_path = os.path.join(OUTPUT_DIR, f"K18_ridge_regression_model.pkl")
+    model_path = os.path.join(WEIGHTS_DIR, f"K18_ridge_regression_model.pkl")
     with open(model_path, "wb") as f:
         pickle.dump(final_model, f)
 
