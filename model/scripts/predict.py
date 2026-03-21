@@ -1,11 +1,11 @@
 import argparse
 import pickle
 import numpy as np
-from grna_features import build_features
+from feature_engineering import build_features
 
-MODEL_PATH  = "./linear_results/ridge_model.pkl"
-MEAN_PATH   = "./weights/target_mean.npy"
-STD_PATH    = "./weights/target_std.npy"
+MODEL_PATH = "../linear_results/ridge_model.pkl"
+MEAN_PATH = "../weights/target_mean.npy"
+STD_PATH = "../weights/target_std.npy"
 
 EXPECTED_LEN = 34  # length the model was trained on
 

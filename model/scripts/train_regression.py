@@ -198,8 +198,15 @@ def main():
     })
     pred_df.to_csv(os.path.join(OUTPUT_DIR, "K18_predictions.csv"), index=False)
 
+    summary_path = os.path.join(OUTPUT_DIR, "K18_run_summary.csv")
+
     summary = {**vars(args), **{f"test_{k}": v for k, v in test_metrics.items()}}
-    pd.DataFrame([summary]).to_csv(os.path.join(OUTPUT_DIR, "K18_run_summary.csv"), index=False)
+    summary_df = pd.DataFrame([summary])
+
+    if os.path.exists(summary_path):
+        summary_df.to_csv(summary_path, mode="a", header=False, index=False)
+    else:
+        summary_df.to_csv(summary_path, index=False)
 
 
 if __name__ == "__main__":
