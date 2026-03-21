@@ -18,8 +18,11 @@ def reverse_complement(seq: str) -> str:
 
 
 def find_window(seq: str, pam: str):
-    pam = reverse_complement(pam.upper())
-    seq = reverse_complement(seq.upper())
+    pam = pam.upper()
+    seq = seq.upper()
+    
+    pam = reverse_complement(pam)
+    seq = reverse_complement(seq)
 
 
     i = seq.find(pam)
@@ -70,3 +73,6 @@ if __name__ == "__main__":
 
     result = predict(args.sequence, pam=args.pam)
     print(f"Predicted indel frequency: {result:.2f}%")
+
+# python model/scripts/predict.py CCTTTTGGGTGTGGGAGATCTCTGCTTCTGATGGCTCAAACACAGCG --pam TTTG
+# python model/scripts/predict.py CCCCCTTCTGACCAAACAAGCCTCGAATCAGCCGCCGGGAAGGCCAC --pam ACCA
